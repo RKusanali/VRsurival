@@ -4,11 +4,17 @@ using UnityEngine;
 
 public class TargetDummy : MonoBehaviour
 {
+    [SerializeField] private Animator m_animator;
     private void OnCollisionEnter(Collision other)
     {
-        if (other.gameObject.CompareTag("Bullet"))
+        if (other.gameObject.CompareTag("Weapon") || other.gameObject.CompareTag("Bullet"))
         {
-            Debug.Log("Touch");
+            m_animator.SetTrigger("Death");
         }
+    }
+
+    public void ActivateDummy()
+    {
+        m_animator.SetTrigger("Activate");
     }
 }
