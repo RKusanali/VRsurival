@@ -1,10 +1,8 @@
 using TMPro;
-using UnityEditorInternal.Profiling.Memory.Experimental;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.XR;
 using UnityEngine.UI;
-using static UnityEditor.Progress;
 
 public class Slot : MonoBehaviour
 {
@@ -33,21 +31,30 @@ public class Slot : MonoBehaviour
         Item itemComponent = obj.GetComponent<Item>();
         if (itemComponent == null) return;
 
-        if (StaticsVar.CheckTriggerRight() || StaticsVar.CheckTriggerLeft())
+        if (StaticsVar.CheckGrabRight())
         {
-            if(ItemInSlot == null)
+            if (other.CompareTag("RightHand"))
             {
-                InsertItem(obj);
+                OutItem();
             }
             else
             {
-                MergeItems(obj);
+                if (ItemInSlot == null)
+                {
+                    InsertItem(obj);
+                }
+                else
+                {
+                    MergeItems(obj);
+                }
             }
         }
     }
 
     void MergeItems(GameObject item)
     {
+        if (item == null) return;
+        if (!item.activeSelf) return;
         numberItems++;
         text.text = numberItems.ToString();
         Destroy(item);
@@ -70,6 +77,7 @@ public class Slot : MonoBehaviour
         SlotImage.color = Color.gray;
         numberItems = (int) 1;
         text.text = numberItems.ToString();
+        obj.SetActive(false);
     }
 
     void OutItem()
@@ -84,6 +92,7 @@ public class Slot : MonoBehaviour
 
             if (numberItems <= 0)
             {
+                Destroy(ItemInSlot);
                 ItemInSlot = null;
                 SlotImage.color = originalColor;
             }
