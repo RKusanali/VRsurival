@@ -10,6 +10,7 @@ TagManager:
   - Weapon
   - Tree
   - Meet
+  - Water
   layers:
   - Default
   - TransparentFX

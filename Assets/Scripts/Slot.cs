@@ -26,14 +26,10 @@ public class Slot : MonoBehaviour
     private void OnTriggerEnter(Collider other)
     {
         GameObject obj = other.gameObject;
-        if (!IsItem(obj)) return;
-
-        Item itemComponent = obj.GetComponent<Item>();
-        if (itemComponent == null) return;
 
         if (StaticsVar.CheckGrabRight())
         {
-            if (other.CompareTag("RightHand"))
+            if (obj == null && numberItems>0)
             {
                 OutItem();
             }
@@ -48,6 +44,7 @@ public class Slot : MonoBehaviour
                     MergeItems(obj);
                 }
             }
+            
         }
     }
 
@@ -99,6 +96,21 @@ public class Slot : MonoBehaviour
         }
     }
 
+    public void Remove(int number = 1)
+    {
+        if(numberItems >= number)
+        {
+            numberItems -= number;
+            text.text = numberItems.ToString();
+            if (numberItems <= 0)
+            {
+                Destroy(ItemInSlot);
+                ItemInSlot = null;
+                SlotImage.color = originalColor;
+            }
+        }
+    }
+
     void SpawnItemInGame(GameObject item)
     {
         GameObject NEW = Instantiate(item, this.transform.position, Quaternion.identity);
@@ -111,5 +123,10 @@ public class Slot : MonoBehaviour
     public void ResetColor()
     {
         SlotImage.color = originalColor;
+    }
+
+    public int getnumberItems()
+    {
+        return numberItems;
     }
 }

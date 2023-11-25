@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -10,6 +11,8 @@ public class Inventory : MonoBehaviour
     [SerializeField] private float cooldownTime = 2.0f; // Délai en secondes
     [SerializeField] private float nextActivationTime = 0.0f;
     bool UIActive;
+
+    [SerializeField] private Slot[] slots;
 
     // Start is called before the first frame update
     void Start()
@@ -36,6 +39,30 @@ public class Inventory : MonoBehaviour
         else
         {
             inventory.SetActive(false);
+        }
+    }
+
+    public bool check(string s, int number = 1)
+    {
+        foreach (Slot slot in slots)
+        {
+            if (slot.ItemInSlot != null && slot.ItemInSlot.GetComponent(System.Type.GetType(s)) != null && slot.getnumberItems() >= number)
+            {
+                Debug.Log("Slot trouvé : " + slot.gameObject.name);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public void take(string s, int number = 1)
+    {
+        foreach (Slot slot in slots)
+        {
+            if (slot.ItemInSlot != null && slot.ItemInSlot.GetComponent(System.Type.GetType(s)) != null && slot.getnumberItems() >= number)
+            {
+                slot.Remove(number);
+            }
         }
     }
 }

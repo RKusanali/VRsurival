@@ -26,7 +26,7 @@ public class CharacterMovement : MonoBehaviour
     {
         if (other.CompareTag("Water"))
         {
-            currentSpeed = waterSpeed;
+            continuousMoveProvider.moveSpeed = waterSpeed;
         }
     }
 
@@ -34,24 +34,7 @@ public class CharacterMovement : MonoBehaviour
     {
         if (other.CompareTag("Water"))
         {
-            currentSpeed = normalSpeed;
+            continuousMoveProvider.moveSpeed = normalSpeed;
         }
-    }
-    private void Update()
-    {
-        if (StaticsVar.CheckSecondaryRight())
-        {
-            verticalSpeed = characterController.isGrounded ? Mathf.Sqrt(jumpForce * -2f * gravity) : 0f;
-        }
-
-        verticalSpeed += gravity * Time.deltaTime;
-
-        Vector3 velocity = new Vector3(
-            Input.GetAxis("Horizontal") * currentSpeed * Time.deltaTime,
-            verticalSpeed * Time.deltaTime,
-            Input.GetAxis("Vertical") * currentSpeed * Time.deltaTime
-        );
-
-        characterController.Move(velocity);
     }
 }
