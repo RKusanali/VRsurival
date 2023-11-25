@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.XR;
 using UnityEngine.UI;
+using UnityEngine.XR.Interaction.Toolkit;
 
 public class StaticsVar : MonoBehaviour
 {
@@ -121,4 +122,25 @@ public class StaticsVar : MonoBehaviour
         return CheckButtonPressD(XRButton.DFour, XRNode.RightHand);
     }
 
+    public static XRSocketInteractor leftHandInteractor;
+    public static XRSocketInteractor rightHandInteractor;
+    public static bool CheckGrabLeftWithItem()
+    {
+        if (CheckGrabRight())
+        {
+            return leftHandInteractor.selectTarget.GetComponent<XRGrabInteractable>().isSelected;
+        }
+
+        return false;
+    }
+
+    public static bool CheckGrabRightWithItem()
+    {
+        if (CheckGrabRight())
+        {
+            return rightHandInteractor.selectTarget.GetComponent<XRGrabInteractable>().isSelected;
+        }
+
+        return false;
+    }
 }

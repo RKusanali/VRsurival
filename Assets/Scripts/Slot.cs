@@ -26,25 +26,22 @@ public class Slot : MonoBehaviour
     private void OnTriggerEnter(Collider other)
     {
         GameObject obj = other.gameObject;
+        if (!StaticsVar.CheckGrabRight()) return;
 
-        if (StaticsVar.CheckGrabRight())
+        if (!StaticsVar.CheckGrabRightWithItem())
         {
-            if (obj == null && numberItems>0)
+            OutItem();
+        }
+        else
+        {
+            if (ItemInSlot == null)
             {
-                OutItem();
+                InsertItem(obj);
             }
             else
             {
-                if (ItemInSlot == null)
-                {
-                    InsertItem(obj);
-                }
-                else
-                {
-                    MergeItems(obj);
-                }
-            }
-            
+                MergeItems(obj);
+            }            
         }
     }
 
