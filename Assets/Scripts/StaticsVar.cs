@@ -143,4 +143,20 @@ public class StaticsVar : MonoBehaviour
 
         return false;
     }
+
+    private Image targetImage;
+    public static Image LoadImage(Image targetImage, string imageName)
+    {
+        Sprite loadedSprite = Resources.Load<Sprite>("widget/" + imageName);
+
+        if (loadedSprite != null)
+        {
+            targetImage.sprite = loadedSprite;
+        }
+        else
+        {
+            Debug.LogError("L'image " + imageName + " n'a pas pu être chargée.");
+        }
+        return targetImage;
+    }
 }

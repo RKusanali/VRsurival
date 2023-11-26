@@ -26,14 +26,11 @@ public class Slot : MonoBehaviour
     private void OnTriggerEnter(Collider other)
     {
         GameObject obj = other.gameObject;
+
         if (!StaticsVar.CheckGrabRight()) return;
 
-        if (!StaticsVar.CheckGrabRightWithItem())
-        {
-            OutItem();
-        }
-        else
-        {
+        //if (StaticsVar.CheckGrabRightWithItem())
+        //{
             if (ItemInSlot == null)
             {
                 InsertItem(obj);
@@ -41,14 +38,22 @@ public class Slot : MonoBehaviour
             else
             {
                 MergeItems(obj);
-            }            
-        }
+            }
+        //}
+        //else {
+          //OutItem();
+        //}
+        
     }
 
     void MergeItems(GameObject item)
     {
         if (item == null) return;
+
         if (!item.activeSelf) return;
+
+        if(!IsItem(item)) return;
+
         numberItems++;
         text.text = numberItems.ToString();
         Destroy(item);

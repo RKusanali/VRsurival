@@ -61,6 +61,7 @@ public class Inventory : MonoBehaviour
         {
             if (slot.ItemInSlot != null && slot.ItemInSlot.GetComponent(System.Type.GetType(s)) != null && slot.getnumberItems() >= number)
             {
+                Debug.Log("Slot trouvé : " + slot.gameObject.name + "remove " + number + "items");
                 slot.Remove(number);
             }
         }

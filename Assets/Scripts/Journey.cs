@@ -21,25 +21,29 @@ public class Journey : MonoBehaviour
     IEnumerator ChangeMaterialOverTime()
     {
         float elapsedTime = 0f;
+        int last_materialIndex = 0;
 
         while (true)
         {
             float journeyProgress = elapsedTime / secondsPerJourney;
             int materialIndex = Mathf.FloorToInt(journeyProgress * dayMaterials.Length) % dayMaterials.Length;
+            last_materialIndex = materialIndex;
 
             Debug.Log("Time: " + elapsedTime);
             Debug.Log("Progress Time:" + journeyProgress);
             Debug.Log("Material Index: " + materialIndex);
 
-            if (materialIndex == 3 && Random.value < sadDayProbability)
+            if (materialIndex == 2 && Random.value < sadDayProbability && last_materialIndex != -1)
             {
                 Debug.Log("Setting sadDay material");
                 meshRenderer.material = sadDay;
+                last_materialIndex = -1;
             }
             else
             {
                 Debug.Log("Setting regular material");
                 meshRenderer.material = dayMaterials[materialIndex];
+                last_materialIndex = materialIndex;
             }
 
             RenderSettings.skybox = meshRenderer.material;
