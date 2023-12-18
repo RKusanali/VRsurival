@@ -22,6 +22,7 @@ public class Journey : MonoBehaviour
     {
         float elapsedTime = 0f;
         int last_materialIndex = 0;
+        bool sadding = false;
 
         while (true)
         {
@@ -29,22 +30,19 @@ public class Journey : MonoBehaviour
             int materialIndex = Mathf.FloorToInt(journeyProgress * dayMaterials.Length) % dayMaterials.Length;
             last_materialIndex = materialIndex;
 
-            Debug.Log("Time: " + elapsedTime);
-            Debug.Log("Progress Time:" + journeyProgress);
-            Debug.Log("Material Index: " + materialIndex);
-
-            if (materialIndex == 2 && Random.value < sadDayProbability && last_materialIndex != -1)
+            if (materialIndex == 2 && Random.value < sadDayProbability && last_materialIndex != -1 && !sadding)
             {
-                Debug.Log("Setting sadDay material");
                 meshRenderer.material = sadDay;
                 last_materialIndex = -1;
+                sadding = true;
             }
             else
             {
-                Debug.Log("Setting regular material");
                 meshRenderer.material = dayMaterials[materialIndex];
                 last_materialIndex = materialIndex;
             }
+
+            if(materialIndex == dayMaterials.Length - 1) sadding = false;
 
             RenderSettings.skybox = meshRenderer.material;
 

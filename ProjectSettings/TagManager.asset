@@ -12,6 +12,7 @@ TagManager:
   - Meet
   - Water
   - Crafting
+  - Shield
   layers:
   - Default
   - TransparentFX

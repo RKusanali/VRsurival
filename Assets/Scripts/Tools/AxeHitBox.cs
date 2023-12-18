@@ -7,16 +7,14 @@ public class AxeHitBox : Tool
     Collider hitbox;
     public float swing_speed = 0;
     public float swing_speed_limit = 6f;
+    public float dgt = 5.0f;
+    public int durability = 30;
     Vector3 oldPos;    
-
-    private void Awake()
-    {
-        hitbox = GetComponent<Collider>();
-    }
     
     private void Start()
     {
-       oldPos = transform.position;
+        hitbox = GetComponent<Collider>();
+        oldPos = transform.position;
     }    
 
     private void Update()
@@ -24,6 +22,11 @@ public class AxeHitBox : Tool
         float dist = Vector3.Distance(oldPos, transform.position);
         swing_speed = dist / Time.deltaTime;
         oldPos = transform.position;
+
+        if(durability <= 0 )
+        {
+            Destroy(this);
+        }
     }
 	
     private void OnTriggerStay(Collider other)

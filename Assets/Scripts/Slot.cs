@@ -1,67 +1,56 @@
+using System;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.XR;
 using UnityEngine.UI;
+using UnityEngine.XR.Interaction.Toolkit;
 
 public class Slot : MonoBehaviour
 {
     public GameObject ItemInSlot;
-    [SerializeField] private Image SlotImage;
+    [SerializeField] private RawImage SlotImage;
     [SerializeField] private int numberItems;
     [SerializeField] private TextMeshProUGUI text;
+    [SerializeField] private Inventory inventory;
+    private String current_item;
     Color originalColor;
-
-    [SerializeField] private XRController controller;
     
     void Start()
     {
-        SlotImage = GetComponentInChildren<Image>();
+        SlotImage = GetComponentInChildren<RawImage>();
         text = GetComponentInChildren<TextMeshProUGUI>(true);
         text.text = string.Empty;
         originalColor = SlotImage.color;
         numberItems = 0;
+        current_item = string.Empty;
     }
 
     private void OnTriggerEnter(Collider other)
     {
         GameObject obj = other.gameObject;
+        if(!(obj.GetComponent<Sword>()
+            || obj.GetComponent<Shield>()
+            || obj.GetComponent<AxeHitBox>()
+            || obj.GetComponent<Wood>()
+            || obj.GetComponent<Stone>()
+            || obj.GetComponent<Boat>()))
+        {
+            return;
+        }
 
         if (!StaticsVar.CheckGrabRight()) return;
 
-        //if (StaticsVar.CheckGrabRightWithItem())
-        //{
-            if (ItemInSlot == null)
-            {
-                InsertItem(obj);
-            }
-            else
-            {
-                MergeItems(obj);
-            }
-        //}
-        //else {
-          //OutItem();
-        //}
-        
-    }
-
-    void MergeItems(GameObject item)
-    {
-        if (item == null) return;
-
-        if (!item.activeSelf) return;
-
-        if(!IsItem(item)) return;
-
-        numberItems++;
-        text.text = numberItems.ToString();
-        Destroy(item);
-    }
-
-    bool IsItem(GameObject obj)
-    {
-        return obj.GetComponent<Item>();
+        if (ItemInSlot == null)
+        {
+            InsertItem(obj);
+            inventory.update_list(obj);
+        }
+        else if(inventory.As_item(obj) == false)
+        {
+            MergeItems(obj);
+        }   
     }
 
     void InsertItem(GameObject obj)
@@ -73,30 +62,45 @@ public class Slot : MonoBehaviour
         obj.GetComponent<Item>().inSlot = true;
         obj.GetComponent<Item>().currentSlot = this;
         ItemInSlot = obj;
-        SlotImage.color = Color.gray;
-        numberItems = (int) 1;
+        numberItems = (int)1;
         text.text = numberItems.ToString();
         obj.SetActive(false);
+
+        string s = string.Empty;
+        s = obj.GetComponent<Sword>() ? "Sword" : s;
+        s = obj.GetComponent<Shield>() ? "Shield" : s;
+        s = obj.GetComponent<AxeHitBox>() ? "Axe" : s;
+        s = obj.GetComponent<Wood>() ? "Wood" : s;
+        s = obj.GetComponent<Stone>() ? "Stone" : s;
+        s = obj.GetComponent<Boat>() ?  "Boat" : s;
+        current_item = s;
+        Texture img = (Texture)Resources.Load<Texture>(s);
+        SlotImage.texture = img;
     }
 
-    void OutItem()
+    void MergeItems(GameObject item)
     {
-        if (ItemInSlot != null)
-        {
-            SpawnItemInGame(ItemInSlot);
+        if (item == null) return;
 
-            numberItems = Mathf.Max(0, numberItems - 1);
+        string s = string.Empty;
+        s = item.GetComponent<Sword>() ? "Sword" : s;
+        s = item.GetComponent<Shield>() ? "Shield" : s;
+        s = item.GetComponent<AxeHitBox>() ? "Axe" : s;
+        s = item.GetComponent<Wood>() ? "Wood" : s;
+        s = item.GetComponent<Stone>() ? "Stone" : s;
+        s = item.GetComponent<Boat>() ? "Boat" : s;
 
-            text.text = numberItems.ToString();
+        if (s == string.Empty || s != current_item) return;
 
-            if (numberItems <= 0)
-            {
-                Destroy(ItemInSlot);
-                ItemInSlot = null;
-                SlotImage.color = originalColor;
-            }
-        }
+        numberItems++;
+        text.text = numberItems.ToString();
+        Destroy(item);
     }
+
+    bool IsItem(GameObject obj)
+    {
+        return obj.GetComponent<Item>();
+    } 
 
     public void Remove(int number = 1)
     {
@@ -105,21 +109,14 @@ public class Slot : MonoBehaviour
             numberItems -= number;
             text.text = numberItems.ToString();
             if (numberItems <= 0)
-            {
+            {              
+                SlotImage.color = originalColor;
+                inventory.delete_item(ItemInSlot);
                 Destroy(ItemInSlot);
                 ItemInSlot = null;
-                SlotImage.color = originalColor;
+                current_item = string.Empty;
             }
         }
-    }
-
-    void SpawnItemInGame(GameObject item)
-    {
-        GameObject NEW = Instantiate(item, this.transform.position, Quaternion.identity);
-        NEW.GetComponent<Rigidbody>().isKinematic = true;
-        NEW.transform.SetParent(null);
-        NEW.GetComponent<Item>().inSlot = false;
-        NEW.GetComponent<Item>().currentSlot = null;
     }
 
     public void ResetColor()
@@ -130,5 +127,34 @@ public class Slot : MonoBehaviour
     public int getnumberItems()
     {
         return numberItems;
+    }
+
+    public void outItem()
+    {
+        if(ItemInSlot != null)
+        {
+            if (numberItems >= 0)
+            {
+                numberItems -= 1;
+                text.text = numberItems.ToString();              
+
+                GameObject newItem = Instantiate(this.ItemInSlot, this.transform.position, Quaternion.identity);
+                XRGrabInteractable newItemGrab = newItem.GetComponent<XRGrabInteractable>();
+                if (newItemGrab != null)
+                {
+                    XRInteractionManager interactionManager = FindObjectOfType<XRInteractionManager>();
+                    newItemGrab.interactionManager = interactionManager;
+                }
+
+                if (numberItems <= 0)
+                {                   
+                    inventory.delete_item(ItemInSlot);
+                    SlotImage.color = originalColor;
+                    SlotImage.texture = null;
+                    Destroy(this.ItemInSlot);
+                    ItemInSlot = null;
+                }
+            }
+        }
     }
 }

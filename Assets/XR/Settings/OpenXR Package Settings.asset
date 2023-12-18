@@ -73,6 +73,7 @@ MonoBehaviour:
   - {fileID: -1090622051400515312}
   m_renderMode: 1
   m_depthSubmissionMode: 0
+  m_symmetricProjection: 0
 --- !u!114 &-7948668439256505898
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -165,6 +166,7 @@ MonoBehaviour:
   - {fileID: -5877916290726118907}
   m_renderMode: 1
   m_depthSubmissionMode: 0
+  m_symmetricProjection: 0
 --- !u!114 &-7136152229531203727
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -185,6 +187,22 @@ MonoBehaviour:
   company: Unity
   priority: 0
   required: 0
+--- !u!114 &-6845236427418698379
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b5a1f07dc5afe854f9f12a4194aca3fb, type: 3}
+  m_Name: WebGL
+  m_EditorClassIdentifier: 
+  features: []
+  m_renderMode: 1
+  m_depthSubmissionMode: 0
+  m_symmetricProjection: 0
 --- !u!114 &-6830727969426373550
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -459,6 +477,7 @@ MonoBehaviour:
   - {fileID: 4335242601995863502}
   m_renderMode: 1
   m_depthSubmissionMode: 0
+  m_symmetricProjection: 0
 --- !u!114 &-3501737443241799582
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -703,6 +722,10 @@ MonoBehaviour:
     manifestName: cambria
     enabled: 1
   forceRemoveInternetPermission: 1
+  symmetricProjection: 0
+  systemSplashScreen: {fileID: 0}
+  lateLatchingMode: 0
+  lateLatchingDebug: 0
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -715,12 +738,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9f0ebc320a151d3408ea1e9fce54d40e, type: 3}
   m_Name: OpenXR Package Settings
   m_EditorClassIdentifier: 
-  Keys: 0100000004000000070000000e000000
+  Keys: 0100000004000000070000000e0000000d00000019000000
   Values:
   - {fileID: -8288973271951248846}
   - {fileID: 4782536923942693379}
   - {fileID: -3514159009477039752}
   - {fileID: -7654590966741070286}
+  - {fileID: -6845236427418698379}
+  - {fileID: 6317869815988854399}
 --- !u!114 &135379997395333663
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -976,6 +1001,7 @@ MonoBehaviour:
   features: []
   m_renderMode: 1
   m_depthSubmissionMode: 0
+  m_symmetricProjection: 0
 --- !u!114 &5590347755120069830
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1028,6 +1054,22 @@ MonoBehaviour:
   company: Meta
   priority: 0
   required: 0
+--- !u!114 &6317869815988854399
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b5a1f07dc5afe854f9f12a4194aca3fb, type: 3}
+  m_Name: tvOS
+  m_EditorClassIdentifier: 
+  features: []
+  m_renderMode: 1
+  m_depthSubmissionMode: 0
+  m_symmetricProjection: 0
 --- !u!114 &6331094901290379636
 MonoBehaviour:
   m_ObjectHideFlags: 0

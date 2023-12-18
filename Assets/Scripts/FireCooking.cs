@@ -7,10 +7,15 @@ public class FireCooking : MonoBehaviour
     private bool isCooked = false;
     private void OnTriggerEnter(Collider other)
     {
-        if (!isCooked && other.CompareTag("Meet"))
+        if (!isCooked && (other.CompareTag("Meet") || other.GetComponent<Drink>() != null))
         {
             StartCoroutine(CookingCoroutine(other.gameObject));
         }
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        isCooked = false;
     }
 
     private IEnumerator CookingCoroutine(GameObject collidedObject)
@@ -27,10 +32,16 @@ public class FireCooking : MonoBehaviour
 
             isCooked = true;
         }
-        else
+
+        else if(collidedObject.GetComponent<Drink>() != null)
         {
-            Debug.LogError("Pas de cuisson");
+            yield return new WaitForSeconds(5f);
+
+            collidedObject.GetComponent<Drink>().set_drinkable();
+
+            isCooked = true;
         }
+
     }
 }
 
