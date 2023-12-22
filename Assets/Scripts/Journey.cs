@@ -11,17 +11,25 @@ public class Journey : MonoBehaviour
     public GameObject background;
     private Renderer meshRenderer;
 
+    [SerializeField] private AudioSource audioSource;
+    [SerializeField] private AudioClip day;
+    [SerializeField] private AudioClip night;
+
     void Start()
     {
         meshRenderer = background.GetComponent<Renderer>();
         meshRenderer.enabled = true;
         StartCoroutine(ChangeMaterialOverTime());
+        audioSource = FindAnyObjectByType<AudioSource>();
+
+        audioSource.clip = day;
+        audioSource.Play();
     }
 
     IEnumerator ChangeMaterialOverTime()
     {
         float elapsedTime = 0f;
-        int last_materialIndex = 0;
+        int last_materialIndex = -1;
         bool sadding = false;
 
         while (true)
@@ -39,10 +47,26 @@ public class Journey : MonoBehaviour
             else
             {
                 meshRenderer.material = dayMaterials[materialIndex];
-                last_materialIndex = materialIndex;
+
+                if(last_materialIndex != materialIndex)
+                {
+                    if (materialIndex == dayMaterials.Length - 1)
+                    {
+                        audioSource.clip = night;
+                    }
+                    else
+                    {
+                        audioSource.clip = day;
+                    }
+
+                    audioSource.Play();
+                }
+
+                last_materialIndex = materialIndex;               
             }
 
             if(materialIndex == dayMaterials.Length - 1) sadding = false;
+
 
             RenderSettings.skybox = meshRenderer.material;
 

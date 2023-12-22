@@ -12,7 +12,6 @@ public class CharacterMovement : MonoBehaviour
     [SerializeField] private float Hunger = 100.0f;
     [SerializeField] private float Drink = 100.0f;
 
-    [SerializeField] private float degradationInterval = 60.0f;
     [SerializeField] private float degradationTimer = 0.0f;
 
     [SerializeField] private float currentSpeed = 5f;
@@ -21,20 +20,21 @@ public class CharacterMovement : MonoBehaviour
     [SerializeField] private float jumpForce = 0.5f;
     [SerializeField] private float gravity = 9.8f;
 
-    [SerializeField] private CharacterController characterController;
-    [SerializeField] private ActionBasedContinuousMoveProvider continuousMoveProvider;
+    private CharacterController characterController;
+    private ActionBasedContinuousMoveProvider continuousMoveProvider;
+
+    [SerializeField] private Inventory menu;
 
     void Start()
     {
         continuousMoveProvider = GetComponent<ActionBasedContinuousMoveProvider>();
         characterController = GetComponent<CharacterController>();
         float currentSpeed = normalSpeed;
-        degradationTimer = degradationInterval; 
-
     }
 
     void Update()
     {
+        Debug.Log(Time.time + " <> " + degradationTimer);
         if (Time.time >= degradationTimer)
         {
             Hunger -= Hunger * 0.01f;
@@ -42,26 +42,28 @@ public class CharacterMovement : MonoBehaviour
             Hunger = Mathf.Max(0.0f, Hunger);
             Drink = Mathf.Max(0.0f, Drink);
 
+            set_HP(HP - (HP * 0.01f));
+
             if (Hunger + Drink < 50)
             {
-                HP -= HP * 0.01f;
                 degradationTimer = Time.time + 30.0f; 
             }
             else if (Hunger + Drink < 75)
             {
-                HP -= HP * 0.01f;
                 degradationTimer = Time.time + 60.0f; 
             }
             else if (Hunger + Drink < 25)
             {
-                HP -= HP * 0.01f;
                 degradationTimer = Time.time + 15.0f; 
             }
             else if (Hunger + Drink < 5)
             {
-                HP -= HP * 0.01f;
                 degradationTimer = Time.time + 5.0f; 
             }
+
+            menu.set_hp_color(HP);
+            menu.set_hunger_color(Hunger);
+            menu.set_water_color(Drink);
 
             if (HP <= 0)
             {
@@ -80,6 +82,12 @@ public class CharacterMovement : MonoBehaviour
         if (other.CompareTag("Water"))
         {
             continuousMoveProvider.moveSpeed = waterSpeed;
+        }
+
+        else if (other.gameObject.GetComponent<EnnemyAI>() && other.gameObject.GetComponent<EnnemyAI>().isAggressive())
+        {
+            float current_hp = get_HP();
+            other.gameObject.GetComponent<CharacterMovement>().set_HP(current_hp - other.gameObject.GetComponent<EnnemyAI>().DGT());
         }
     }
 

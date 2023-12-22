@@ -1,7 +1,10 @@
+using System.Collections;
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.XR;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class Crafting : MonoBehaviour
@@ -152,7 +155,7 @@ public class Crafting : MonoBehaviour
     {
         if (inventory != null)
         {
-            if (inventory.check("Wood", 300))
+            if (inventory.check("Wood", 100))
             {
                 return true;
             }
@@ -169,9 +172,7 @@ public class Crafting : MonoBehaviour
                 inventory.take("wood", 3);
                 inventory.take("stone", 1);
                 GameObject prefab = Resources.Load<GameObject>("Sword");
-                inventory.PreSpawn(prefab);
                 inventory.SetSpawn(prefab);
-
             }
         }
     }
@@ -185,7 +186,6 @@ public class Crafting : MonoBehaviour
                 inventory.take("wood", 3);
                 inventory.take("stone", 10);
                 GameObject prefab = Resources.Load<GameObject>("Shield");
-                inventory.PreSpawn(prefab);
                 inventory.SetSpawn(prefab);
             }
         }
@@ -200,7 +200,6 @@ public class Crafting : MonoBehaviour
                 inventory.take("wood", 3);
                 inventory.take("stone", 5);
                 GameObject prefab = Resources.Load<GameObject>("Axe");
-                inventory.PreSpawn(prefab);
                 inventory.SetSpawn(prefab);
             }
         }
@@ -213,11 +212,19 @@ public class Crafting : MonoBehaviour
         {
             if (boat_requirement())
             {
-                inventory.take("wood", 300);
+                inventory.take("wood", 100);
                 GameObject prefab = Resources.Load<GameObject>("Boat");
-                inventory.PreSpawn(prefab);
                 inventory.SetSpawn(prefab);
+
+                StartCoroutine(EndTime());
+                
             }
         }
+    }
+
+    IEnumerator EndTime()
+    {
+        yield return new WaitForSeconds(10);
+        SceneManager.LoadScene("Ending");
     }
 }

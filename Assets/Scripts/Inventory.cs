@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.InputSystem.HID;
 using UnityEngine.UI;
 using UnityEngine.UIElements;
 using UnityEngine.XR.Interaction.Toolkit;
@@ -14,13 +15,21 @@ public class Inventory : MonoBehaviour
     [SerializeField] private float nextActivationTime = 0.0f;
     bool UIActive;
 
-    [SerializeField] private Slot[] slots;
-    private List<string> liste;
+    [SerializeField] private Storage storage;
+
+    [SerializeField] private Slot slotWood;
+    [SerializeField] private Slot slotStone;
+    [SerializeField] private Slot slotHP;
+    [SerializeField] private Slot slotHunger;
+    [SerializeField] private Slot slotWater;
+
+    public UnityEngine.Color danger;
+    public UnityEngine.Color mid;
+    public UnityEngine.Color good;
+    
 
     public Transform handTransform; 
     public GameObject itemPrefab;  
-    private GameObject ghostItem;
-    private bool release;
 
     // Start is called before the first frame update
     void Start()
@@ -28,8 +37,13 @@ public class Inventory : MonoBehaviour
         inventory.SetActive(false);
         UIActive = false;
         itemPrefab = null; 
-        ghostItem = null;
-        release = false;
+
+        slotWood.setText(0);
+        slotStone.setText(0);
+        slotHP.setText(100.0f);
+        slotHunger.setText(100.0f);
+        slotWater.setText(100.0f);
+
     }
 
     // Update is called once per frame
@@ -41,49 +55,37 @@ public class Inventory : MonoBehaviour
             nextActivationTime = Time.time + cooldownTime;
         }
         
-        if (UIActive)
+        if (UIActive && !inventory.activeSelf)
         {
             inventory.SetActive(true);
             inventory.transform.position = anchor.transform.position;
             inventory.transform.eulerAngles = new Vector3(anchor.transform.eulerAngles.x + 15, anchor.transform.eulerAngles.y, 0);
         }
-        else
+        else if (!UIActive)
         {
             inventory.SetActive(false);
         }
 
-        if (ghostItem != null)
-        {
-            ghostItem.transform.position = handTransform.position;
-        }
-
-        if (StaticsVar.CheckGrabRight() && ghostItem != null)
-        {
-            ghostItem.SetActive(true);
-        }
-        else if(ghostItem != null)
-        {
-            ghostItem.SetActive(false);
-            release = true;
-        }
-
-        if (itemPrefab != null && release)
+        if (itemPrefab != null)
         {
             SpawnItem();
             itemPrefab = null;
-            release = false;
         }
     }
 
     public bool check(string s, int number = 1)
     {
-        foreach (Slot slot in slots)
-        {
-            Debug.Log(System.Type.GetType(s));
-            if (slot.ItemInSlot != null && slot.ItemInSlot.GetComponent(System.Type.GetType(s)) != null && slot.getnumberItems() >= number)
+        if (s.Equals("Stone")){
+            if(slotStone != null)
             {
-                Debug.Log("Slot trouvé : " + slot.gameObject.name);
-                return true;
+                return (slotStone.NumberItems() > number);
+            }
+        }
+        else if (s.Equals("Wood"))
+        {
+            if (slotWood != null)
+            {
+                return (slotWood.NumberItems() > number);
             }
         }
         return false;
@@ -91,12 +93,24 @@ public class Inventory : MonoBehaviour
 
     public void take(string s, int number = 1)
     {
-        foreach (Slot slot in slots)
+        bool ok = check(s, number);
+        if (ok)
         {
-            if (slot.ItemInSlot != null && slot.ItemInSlot.GetComponent(System.Type.GetType(s)) != null && slot.getnumberItems() >= number)
+            if (s.Equals("Stone"))
             {
-                Debug.Log("Slot trouvé : " + slot.gameObject.name + "remove " + number + "items");
-                slot.Remove(number);
+                if (slotStone != null)
+                {
+                    slotStone.UpdateItem(-1*number);
+                    storage.RemoveStone(number);
+                }
+            }
+            else if (s.Equals("Wood"))
+            {
+                if (slotWood != null)
+                {
+                    slotWood.UpdateItem(-1*number);
+                    storage.RemoveWood(number);
+                }
             }
         }
     }
@@ -104,13 +118,6 @@ public class Inventory : MonoBehaviour
     public void SetSpawn(GameObject obj)
     { 
         itemPrefab = obj; 
-    }
-
-    public void PreSpawn(GameObject obj)
-    {
-        ghostItem = Instantiate(obj, handTransform.position, Quaternion.identity);
-        ghostItem.GetComponent<Renderer>().material.color = new Color(1f, 1f, 1f, 0.5f);
-        ghostItem.SetActive(false);
     }
 
     public void SpawnItem()
@@ -123,45 +130,69 @@ public class Inventory : MonoBehaviour
             XRInteractionManager interactionManager = FindObjectOfType<XRInteractionManager>();
             newItemGrab.interactionManager = interactionManager;
         }
-        Destroy(ghostItem);
+
     }
 
-    public void update_list(GameObject obj)
+    public void set_hp_color(float n)
     {
-        string s = string.Empty;
-        s = obj.GetComponent<Sword>() ? "Sword" : s;
-        s = obj.GetComponent<Shield>() ? "Shield" : s;
-        s = obj.GetComponent<AxeHitBox>() ? "Axe" : s;
-        s = obj.GetComponent<Wood>() ? "Wood" : s;
-        s = obj.GetComponent<Stone>() ? "Stone" : s;
-        s = obj.GetComponent<Boat>() ? "Boat" : s;
-        liste.Add(s);
-    }
-
-    public void delete_item(GameObject obj) 
-    {
-        string s = string.Empty;
-        s = obj.GetComponent<Sword>() ? "Sword" : s;
-        s = obj.GetComponent<Shield>() ? "Shield" : s;
-        s = obj.GetComponent<AxeHitBox>() ? "Axe" : s;
-        s = obj.GetComponent<Wood>() ? "Wood" : s;
-        s = obj.GetComponent<Stone>() ? "Stone" : s;
-        s = obj.GetComponent<Boat>() ? "Boat" : s;
-        if (liste.Contains(s))
+        if(n > 66)
         {
-            liste.Remove(s);
+            slotHP.setColor(this.good);
         }
+        else if(n > 33)
+        {
+            slotHP.setColor(this.mid);
+        }
+        else
+        {
+            slotHP.setColor(this.danger);
+        }
+        slotHP.setText(n);
     }
 
-    public bool As_item(GameObject obj)
+    public void set_hunger_color(float n)
     {
-        string s = string.Empty;
-        s = obj.GetComponent<Sword>() ? "Sword" : s;
-        s = obj.GetComponent<Shield>() ? "Shield" : s;
-        s = obj.GetComponent<AxeHitBox>() ? "Axe" : s;
-        s = obj.GetComponent<Wood>() ? "Wood" : s;
-        s = obj.GetComponent<Stone>() ? "Stone" : s;
-        s = obj.GetComponent<Boat>() ? "Boat" : s;
-        return (liste.Contains(s) && s != string.Empty);
+        if (n > 66)
+        {
+            slotHunger.setColor(this.good);
+        }
+        else if (n > 33)
+        {
+            slotHunger.setColor(this.mid);
+        }
+        else
+        {
+            slotHunger.setColor(this.danger);
+        }
+        slotHunger.setText(n);
+    }
+
+    public void set_water_color(float n)
+    {
+        if (n > 66)
+        {
+            slotWater.setColor(this.good);
+        }
+        else if (n > 33)
+        {
+            slotWater.setColor(this.mid);
+        }
+        else
+        {
+            slotWater.setColor(this.danger);
+        }
+        slotWater.setText(n);
+    }
+
+    public void set_wood(int number = 1)
+    {
+        slotWood.setText(slotWood.NumberItems() + number);
+        slotWood.UpdateItem(number);
+    }
+
+    public void set_stone(int number = 1)
+    {
+        slotStone.setText(slotStone.NumberItems() + number);
+        slotStone.UpdateItem(number);
     }
 }

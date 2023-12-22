@@ -7,9 +7,9 @@ public class Tree : MonoBehaviour
     public int HP = 30;
     Animation reaction_anim;
     // Start is called before the first frame update
-    void Awake()
+    void Start()
     {
-        reaction_anim = GetComponent<Animation>();
+        reaction_anim = this.GetComponent<Animation>();
     }
 
     public void Hit()

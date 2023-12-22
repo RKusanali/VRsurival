@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Numerics;
 using UnityEngine;
 using UnityEngine.AI;
+using Vector3 = UnityEngine.Vector3;
 
 public class EnnemyAI : MonoBehaviour
 {
@@ -36,11 +37,45 @@ public class EnnemyAI : MonoBehaviour
         }
     }
 
-    private void OnTriggerEnter(Collider other)
+    public bool isAggressive()
     {
-        if (other.gameObject.CompareTag("Player") == true) {
-            float current_hp = other.gameObject.GetComponent<CharacterMovement>().get_HP();
-            other.gameObject.GetComponent<CharacterMovement>().set_HP(current_hp - Dgt);
-        }
+        return agressive;
+    }
+
+    public void setAggressive(bool b)
+    {
+        agressive = b;
+    }
+
+    public float DGT()
+    {
+        return Dgt;
+    }
+
+    public void set_speed(float f)
+    {
+        agent.speed = f;
+    }
+
+    public float get_speed() { return agent.speed; }
+
+    public void set_pos(UnityEngine.Vector3 v)
+    {
+        this.transform.position = v;
+    }
+
+    public float x()
+    {
+        return this.transform.position.x;
+    }
+
+    public float y()
+    {
+        return this.transform.position.y;
+    }
+
+    public float z()
+    {
+        return this.transform.position.z;
     }
 }

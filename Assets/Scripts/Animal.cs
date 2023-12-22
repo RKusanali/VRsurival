@@ -15,7 +15,8 @@ public class Animal : MonoBehaviour
             {
                 Destroy(this.gameObject);
                 GameObject item = Resources.Load<GameObject>("KFC");
-                GameObject NEW = Instantiate(item, this.transform.position, Quaternion.identity);
+                Vector3 pos = new Vector3(this.transform.position.x, this.transform.position.y + 1.0f, this.transform.position.z);
+                GameObject NEW = Instantiate(item, pos, Quaternion.identity);
                 NEW.GetComponent<Rigidbody>().isKinematic = true;
                 NEW.transform.SetParent(null);
                 NEW.GetComponent<Item>().inSlot = false;
