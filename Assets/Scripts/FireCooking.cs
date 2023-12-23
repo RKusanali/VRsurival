@@ -31,6 +31,11 @@ public class FireCooking : MonoBehaviour
             cuitTransform.gameObject.SetActive(true);
 
             isCooked = true;
+
+            if (collidedObject.GetComponent<Mangeable>())
+            {
+                collidedObject.GetComponent<Mangeable>().set_mangeable(true);
+            }
         }
 
         else if(collidedObject.GetComponent<Drink>() != null)

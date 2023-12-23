@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem.HID;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using UnityEngine.UIElements;
 using UnityEngine.XR.Interaction.Toolkit;
@@ -38,20 +39,24 @@ public class Inventory : MonoBehaviour
         UIActive = false;
         itemPrefab = null; 
 
-        slotWood.setText(0);
-        slotStone.setText(0);
+        slotWood.setText2(slotWood.NumberItems());
+        slotStone.setText2(slotStone.NumberItems());
         slotHP.setText(100.0f);
         slotHunger.setText(100.0f);
         slotWater.setText(100.0f);
-
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (StaticsVar.CheckSecondaryLeft())
+        if (StaticsVar.CheckPrimaryLeft() && !UIActive)
         {
-            UIActive = !UIActive;
+            UIActive = true;
+            nextActivationTime = Time.time + cooldownTime;
+        }
+        else if(UIActive && StaticsVar.CheckSecondaryLeft())
+        {
+            UIActive = false;
             nextActivationTime = Time.time + cooldownTime;
         }
         
@@ -186,13 +191,13 @@ public class Inventory : MonoBehaviour
 
     public void set_wood(int number = 1)
     {
-        slotWood.setText(slotWood.NumberItems() + number);
+        slotWood.setText2(slotWood.NumberItems() + number);
         slotWood.UpdateItem(number);
     }
 
     public void set_stone(int number = 1)
     {
-        slotStone.setText(slotStone.NumberItems() + number);
+        slotStone.setText2(slotStone.NumberItems() + number);
         slotStone.UpdateItem(number);
     }
 }

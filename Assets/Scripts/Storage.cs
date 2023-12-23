@@ -33,46 +33,51 @@ public class Storage : MonoBehaviour
         if (other.gameObject.GetComponent<Stone>())
         {
             inventory.set_stone(-1);
+            RemoveStone();
         }
 
         else if (other.gameObject.GetComponent<Wood>())
         {
             inventory.set_wood(-1);
+            RemoveWood();
         }
     }
 
     public float maxDistanceToRemove = 5f;
-    public void RemoveStone(int count)
+    public void RemoveStone(int count = 1)
     {
         Stone[] components = FindObjectsOfType<Stone>();
 
         for (int i = 0; i < components.Length; i++)
         {
-            float distance = Vector3.Distance(transform.position, components[i].transform.position);
+            Bounds bounds = spawnArea.GetComponent<Collider>().bounds;
+            bool x = (components[i].transform.position.x <= bounds.max.x + 1.0f && components[i].transform.position.x >= bounds.min.x - 1.0f ? true : false);
+            bool y = (components[i].transform.position.y <= bounds.max.y + 1.0f && components[i].transform.position.y >= bounds.min.y - 1.0f ? true : false);
+            bool z = (components[i].transform.position.z <= bounds.max.z + 1.0f && components[i].transform.position.z >= bounds.min.z - 1.0f ? true : false);
 
-            if (distance <= maxDistanceToRemove)
+            if (x && y && z)
             {
                 Destroy(components[i].gameObject);
                 count--;
 
                 if (count <= 0)
                 {
-                    break; 
+                    break;
                 }
             }
         }
     }
 
-    public void RemoveWood(int count)
+    public void RemoveWood(int count = 1)
     {
         Wood[] components = FindObjectsOfType<Wood>();
 
         for (int i = 0; i < components.Length; i++)
         {
             Bounds bounds = spawnArea.GetComponent<Collider>().bounds;
-            bool x = (components[i].transform.position.x <= bounds.max.x && components[i].transform.position.x >= bounds.min.x ? true : false);
-            bool y = (components[i].transform.position.y <= bounds.max.y && components[i].transform.position.y >= bounds.min.y ? true : false);
-            bool z = (components[i].transform.position.z <= bounds.max.z && components[i].transform.position.z >= bounds.min.z ? true : false);
+            bool x = (components[i].transform.position.x <= bounds.max.x + 1.0f && components[i].transform.position.x >= bounds.min.x - 1.0f ? true : false);
+            bool y = (components[i].transform.position.y <= bounds.max.y + 1.0f && components[i].transform.position.y >= bounds.min.y - 1.0f ? true : false);
+            bool z = (components[i].transform.position.z <= bounds.max.z + 1.0f && components[i].transform.position.z >= bounds.min.z - 1.0f ? true : false);
 
         if (x && y && z)
             {

@@ -60,7 +60,7 @@ public class Generator : MonoBehaviour
 
                 if(animal.GetComponent<EnnemyAI>())
                 {
-                    animal.GetComponent<EnnemyAI>().setAggressive(Random.Range(0.0f, 1.0f) > 0.80f);
+                    animal.GetComponent<EnnemyAI>().setAggressive(Random.Range(0.0f, 1.0f) > 0.75f);
                 }
             }
         }
