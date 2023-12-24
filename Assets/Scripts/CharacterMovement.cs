@@ -1,4 +1,5 @@
 using Meta.WitAi;
+using System;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.XR;
@@ -34,42 +35,49 @@ public class CharacterMovement : MonoBehaviour
 
     void Update()
     {
-        Debug.Log(Time.time + " <> " + degradationTimer);
-        if (Time.time >= degradationTimer)
+        Debug.Log(HP + "," + Hunger + "," + Drink + " ||| " + Time.time + " <> " + degradationTimer);
+
+        bool b = (Time.time >= degradationTimer);
+        Hunger = Hunger - (Hunger * 0.000001f);
+        Drink = Drink - (Drink * 0.000001f);
+        Hunger = Mathf.Max(0.0f, Hunger);
+        Drink = Mathf.Max(0.0f, Drink);
+                 
+        if (b && Hunger + Drink < 5)
         {
-            Hunger -= Hunger * 0.01f;
-            Drink -= Drink * 0.01f;
-            Hunger = Mathf.Max(0.0f, Hunger);
-            Drink = Mathf.Max(0.0f, Drink);
-
-            set_HP(HP - (HP * 0.01f));
-
-            if (Hunger + Drink < 50)
-            {
-                degradationTimer = Time.time + 30.0f; 
-            }
-            else if (Hunger + Drink < 75)
-            {
-                degradationTimer = Time.time + 60.0f; 
-            }
-            else if (Hunger + Drink < 25)
-            {
-                degradationTimer = Time.time + 15.0f; 
-            }
-            else if (Hunger + Drink < 5)
-            {
-                degradationTimer = Time.time + 5.0f; 
-            }
-
-            menu.set_hp_color(HP);
-            menu.set_hunger_color(Hunger);
-            menu.set_water_color(Drink);
-
-            if (HP <= 0)
-            {
-                RestartGame();
-            }
+            degradationTimer = Time.time + 5.0f;
+            set_HP(HP - (HP * 0.000005f));
         }
+        else if (b && Hunger + Drink < 25)
+        {
+            degradationTimer = Time.time + 15.0f;
+            set_HP(HP - (HP * 0.000003f));
+        }
+        else if (b && Hunger + Drink < 50)
+        {
+            degradationTimer = Time.time + 30.0f;
+            set_HP(HP - (HP * 0.000001f));
+        }
+        else if (b && Hunger + Drink < 75)
+        {
+            degradationTimer = Time.time + 60.0f;
+        }
+        else if (b)
+        {
+            degradationTimer = Time.time + 5.0f;
+            set_HP(Math.Min(100.0f, HP + (25.0f)));
+        }
+
+
+        menu.set_hp_color(HP);
+        menu.set_hunger_color(Hunger);
+        menu.set_water_color(Drink);
+
+        if (HP <= 0)
+        {
+            RestartGame();
+        }
+           
     }
 
     void RestartGame()
@@ -87,7 +95,10 @@ public class CharacterMovement : MonoBehaviour
         else if (other.gameObject.GetComponent<EnnemyAI>() && other.gameObject.GetComponent<EnnemyAI>().isAggressive())
         {
             float current_hp = get_HP();
-            other.gameObject.GetComponent<CharacterMovement>().set_HP(current_hp - other.gameObject.GetComponent<EnnemyAI>().DGT());
+            this.HP = current_hp - other.gameObject.GetComponent<EnnemyAI>().DGT();
+            menu.set_hp_color(HP);
+            UnityEngine.Vector3 v = new UnityEngine.Vector3(this.transform.position.x - UnityEngine.Random.Range(0.0f, 1.0f), this.transform.position.y, this.transform.position.z - UnityEngine.Random.Range(0.0f, 1.0f) );
+            this.transform.position = v;
         }
     }
 

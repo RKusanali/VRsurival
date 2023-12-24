@@ -27,6 +27,7 @@ public class EnnemyAI : MonoBehaviour
             else
             {
                 agent.SetDestination(-1*player.position);
+                setAggressive(Random.Range(0.0f, 1.0f) > 0.75f);
             }
         }
         else

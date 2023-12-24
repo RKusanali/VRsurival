@@ -30,18 +30,19 @@ public class Journey : MonoBehaviour
     {
         float elapsedTime = 0f;
         int last_materialIndex = -1;
+        int materialIndex = 0;
         bool sadding = false;
+        float journeyProgress = 0.0f;
 
         while (true)
         {
-            float journeyProgress = elapsedTime / secondsPerJourney;
-            int materialIndex = Mathf.FloorToInt(journeyProgress * dayMaterials.Length) % dayMaterials.Length;
+            journeyProgress = elapsedTime / secondsPerJourney;
             last_materialIndex = materialIndex;
+            materialIndex = Mathf.FloorToInt(journeyProgress * dayMaterials.Length) % dayMaterials.Length;
 
-            if (materialIndex == 2 && Random.value < sadDayProbability && last_materialIndex != -1 && !sadding)
+            if (materialIndex == 2 && Random.value < sadDayProbability && !sadding)
             {
                 meshRenderer.material = sadDay;
-                last_materialIndex = -1;
                 sadding = true;
             }
             else
@@ -50,23 +51,20 @@ public class Journey : MonoBehaviour
 
                 if(last_materialIndex != materialIndex)
                 {
-                    if (materialIndex == dayMaterials.Length - 1)
+                    if (materialIndex >= dayMaterials.Length - 1 && last_materialIndex <= dayMaterials.Length - 1)
                     {
                         audioSource.clip = night;
+                        audioSource.Play();
                     }
-                    else
+                    else if(materialIndex <= dayMaterials.Length - 1 && last_materialIndex >= dayMaterials.Length - 1)
                     {
                         audioSource.clip = day;
-                    }
-
-                    audioSource.Play();
-                }
-
-                last_materialIndex = materialIndex;               
+                        audioSource.Play();
+                    }                   
+                }                 
             }
 
-            if(materialIndex == dayMaterials.Length - 1) sadding = false;
-
+            if (materialIndex >= dayMaterials.Length - 1) sadding = false;
 
             RenderSettings.skybox = meshRenderer.material;
 

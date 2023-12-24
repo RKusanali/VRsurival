@@ -215,16 +215,14 @@ public class Crafting : MonoBehaviour
                 inventory.take("wood", 100);
                 GameObject prefab = Resources.Load<GameObject>("Boat");
                 inventory.SetSpawn(prefab);
-
                 StartCoroutine(EndTime());
-                
             }
         }
     }
 
     IEnumerator EndTime()
     {
-        yield return new WaitForSeconds(10);
+        yield return new WaitForSeconds(3);
         SceneManager.LoadScene("Ending");
     }
 }

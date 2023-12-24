@@ -147,6 +147,7 @@ public class StaticsVar : MonoBehaviour
     private Image targetImage;
     public static Image LoadImage(Image targetImage, string imageName)
     {
+        //Si existe le dossier Ressources dans l'éditeur ca chercher Ressources.Load< --Type-- >( --Name-- );
         Sprite loadedSprite = Resources.Load<Sprite>("widget/" + imageName);
 
         if (loadedSprite != null)

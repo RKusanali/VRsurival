@@ -15,7 +15,9 @@ public class Slot : MonoBehaviour
 
     public int NumberItems() {  return numberItems; }
 
-    public void UpdateItem(int i = 1) { numberItems = Math.Max(numberItems + i, 0); }
+    public void UpdateItem(int i = 1) { 
+        numberItems = Math.Max(numberItems + i, 0); 
+    }
 
     public void setColor(Color c) {
         var colors = slotButon.colors;
@@ -25,7 +27,13 @@ public class Slot : MonoBehaviour
 
     public void setText(float f)
     {
-        text.text = String.Empty;
+        text.text = "";
+        text.text = f.ToString("000.00");
+    }
+
+    public void setText2(int f)
+    {
+        text.text = "";
         text.text = f.ToString();
     }
 }
