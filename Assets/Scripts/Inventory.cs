@@ -108,14 +108,11 @@ public class Inventory : MonoBehaviour
 
     public void take(string s, int number = 1)
     {
-        bool ok = check(s, number);
-        if (ok)
-        {
             if (s.Equals("Stone"))
             {
                 if (slotStone != null)
                 {
-                    slotStone.UpdateItem(-1*number);
+                    set_stone((-1) * number);
                     storage.RemoveStone(number);
                 }
             }
@@ -123,11 +120,10 @@ public class Inventory : MonoBehaviour
             {
                 if (slotWood != null)
                 {
-                    slotWood.UpdateItem(-1*number);
+                    set_wood((-1) * number);
                     storage.RemoveWood(number);
                 }
             }
-        }
     }
 
     public void SetSpawn(GameObject obj)

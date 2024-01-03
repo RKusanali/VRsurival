@@ -15,8 +15,10 @@ public class Slot : MonoBehaviour
 
     public int NumberItems() {  return numberItems; }
 
-    public void UpdateItem(int i = 1) { 
-        numberItems = Math.Max(numberItems + i, 0); 
+    public void UpdateItem(int i = 1) {
+        int n = numberItems + i;
+        n = Math.Max(0, n);
+        numberItems = n; 
     }
 
     public void setColor(Color c) {
@@ -35,5 +37,10 @@ public class Slot : MonoBehaviour
     {
         text.text = "";
         text.text = f.ToString();
+    }
+
+    public void set_number(int number)
+    {
+        this.numberItems = Math.Max(0, number);
     }
 }

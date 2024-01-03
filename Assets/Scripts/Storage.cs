@@ -33,13 +33,13 @@ public class Storage : MonoBehaviour
         if (other.gameObject.GetComponent<Stone>())
         {
             inventory.set_stone(-1);
-            RemoveStone();
+            //RemoveStone();
         }
 
         else if (other.gameObject.GetComponent<Wood>())
         {
             inventory.set_wood(-1);
-            RemoveWood();
+            //RemoveWood();
         }
     }
 

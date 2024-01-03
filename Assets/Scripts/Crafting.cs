@@ -169,8 +169,8 @@ public class Crafting : MonoBehaviour
         {
             if (sword_requirement())
             {
-                inventory.take("wood", 3);
-                inventory.take("stone", 1);
+                inventory.take("Wood", 3);
+                inventory.take("Stone", 1);
                 GameObject prefab = Resources.Load<GameObject>("Sword");
                 inventory.SetSpawn(prefab);
             }
@@ -183,8 +183,8 @@ public class Crafting : MonoBehaviour
         {
             if (shield_requirement())
             {
-                inventory.take("wood", 3);
-                inventory.take("stone", 10);
+                inventory.take("Wood", 3);
+                inventory.take("Stone", 10);
                 GameObject prefab = Resources.Load<GameObject>("Shield");
                 inventory.SetSpawn(prefab);
             }
@@ -197,8 +197,8 @@ public class Crafting : MonoBehaviour
         {
             if (axe_requirement())
             {
-                inventory.take("wood", 3);
-                inventory.take("stone", 5);
+                inventory.take("Wood", 3);
+                inventory.take("Stone", 5);
                 GameObject prefab = Resources.Load<GameObject>("Axe");
                 inventory.SetSpawn(prefab);
             }
@@ -212,7 +212,7 @@ public class Crafting : MonoBehaviour
         {
             if (boat_requirement())
             {
-                inventory.take("wood", 100);
+                inventory.take("Wood", 100);
                 GameObject prefab = Resources.Load<GameObject>("Boat");
                 inventory.SetSpawn(prefab);
                 StartCoroutine(EndTime());
