@@ -147,7 +147,7 @@ MonoBehaviour:
   agressive: 0
   item: {fileID: 0}
   Dgt: 5
-  seuil: 100
+  seuil: 5
 --- !u!65 &-9111661457988266342
 BoxCollider:
   m_ObjectHideFlags: 0

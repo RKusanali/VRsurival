@@ -12,14 +12,16 @@ public class EnnemyAI : MonoBehaviour
     [SerializeField] private bool agressive;
     [SerializeField] GameObject item;
     [SerializeField] private float Dgt = 15.0f;
-    [SerializeField] private float seuil = 100.0f;
+    [SerializeField] private float seuil = 10.0f;
 
     void Update()
     {
-        float d = UnityEngine.Vector3.Distance(this.transform.position, player.position);
+        float d = UnityEngine.Vector2.Distance(new UnityEngine.Vector2(this.transform.position.x, this.transform.position.z), new UnityEngine.Vector2(player.position.x, player.position.z));
+        Debug.Log(this.transform.position + " - " + d + " < " + seuil + " --> " + (d < seuil) + " ==> " + agent.speed);
         if (player != null && d < seuil)
-        {           
-            agent.speed = 5.0f / d;
+        {
+            agent.speed += Mathf.Min((5.0f / d)/10.0f, 0.005f);
+            agent.speed = Mathf.Min(agent.speed, 6.0f);
             if(agressive)
             {
                 agent.SetDestination(player.position);

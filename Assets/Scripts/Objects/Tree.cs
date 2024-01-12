@@ -24,6 +24,8 @@ public class Tree : MonoBehaviour
                 GameObject newItem = Instantiate(prefab, this.transform.position + new Vector3(0.0f,2.0f,0.0f), Quaternion.identity);
             }
         }
+        //reaction_anim.GetComponent<Animation>().transform.position = (this.transform.position);
         reaction_anim.GetComponent<Animation>().Play();
     }
+
 }

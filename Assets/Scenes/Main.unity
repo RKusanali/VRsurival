@@ -25805,7 +25805,7 @@ MonoBehaviour:
   agressive: 0
   item: {fileID: 0}
   Dgt: 15
-  seuil: 100
+  seuil: 10
 --- !u!195 &1124732211
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -53480,6 +53480,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_IsTrigger
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3160742119112337774, guid: d51c1f51af5a2924e8282c507cf5e40e,
+        type: 3}
+      propertyPath: seuil
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 3160742119112337774, guid: d51c1f51af5a2924e8282c507cf5e40e,
         type: 3}
