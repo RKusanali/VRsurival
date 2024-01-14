@@ -13,11 +13,21 @@ public class EnnemyAI : MonoBehaviour
     [SerializeField] GameObject item;
     [SerializeField] private float Dgt = 15.0f;
     [SerializeField] private float seuil = 10.0f;
+    [SerializeField] Animation animator;
+    private float originalspeed;
+
+    private void Start()
+    {
+        animator = this.GetComponent<Animation>();
+        if (animator) animator.Play("walk");
+        originalspeed = agent.speed;
+    }
 
     void Update()
     {
         float d = UnityEngine.Vector2.Distance(new UnityEngine.Vector2(this.transform.position.x, this.transform.position.z), new UnityEngine.Vector2(player.position.x, player.position.z));
         Debug.Log(this.transform.position + " - " + d + " < " + seuil + " --> " + (d < seuil) + " ==> " + agent.speed);
+        if (animator) animator.Play("walk");
         if (player != null && d < seuil)
         {
             agent.speed += Mathf.Min((5.0f / d)/10.0f, 0.005f);
@@ -34,7 +44,7 @@ public class EnnemyAI : MonoBehaviour
         }
         else
         {
-            agent.speed = 5.0f;
+            agent.speed = originalspeed;
             UnityEngine.Vector3 aleatoire = new UnityEngine.Vector3(Random.Range(-5.0f, 5.0f), this.transform.position.y, Random.Range(-4.0f, 4.0f));
             agent.SetDestination(aleatoire);
         }

@@ -6,10 +6,12 @@ public class Tree : MonoBehaviour
 {
     public int HP = 30;
     Animation reaction_anim;
+    private Transform t;
 
     void Start()
     {
         reaction_anim = this.GetComponent<Animation>();
+        t = this.transform;
     }
 
     public void Hit()
@@ -25,7 +27,12 @@ public class Tree : MonoBehaviour
             }
         }
         //reaction_anim.GetComponent<Animation>().transform.position = (this.transform.position);
-        reaction_anim.GetComponent<Animation>().Play();
+        //reaction_anim.GetComponent<Animation>().Play();
+        //this.transform.position = t.position;
     }
 
+    void Update()
+    {
+       //Hit();
+    }
 }

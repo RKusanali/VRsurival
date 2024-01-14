@@ -1,11 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 using UnityEngine.XR.Interaction.Toolkit;
 
 public class Animal : MonoBehaviour
 {
     [SerializeField] private float HP = 100.0f;
+    public NavMeshAgent agent;
 
     private void OnTriggerEnter(Collider other)
     {
@@ -45,6 +47,17 @@ public class Animal : MonoBehaviour
                     this.GetComponent<EnnemyAI>().setAggressive(Random.Range(0.0f,1.0f) > 0.75f);
                 }
             }
+        }
+    }
+
+    void Update()
+    {
+        if (!this.GetComponent<EnnemyAI>() && agent)
+        {
+            float b = (Random.Range(-1.0f, 1.0f) > 0.0f ? 1.0F : -1.0f);
+            UnityEngine.Vector3 aleatoire = new UnityEngine.Vector3(this.transform.position.x + agent.speed * b * Random.Range(0.0f, 5.0f), this.transform.position.y, this.transform.position.z + agent.speed * b * Random.Range(0.0f, 4.0f));
+            agent.SetDestination(aleatoire);
+            this.transform.position = new UnityEngine.Vector3(this.transform.position.x + agent.speed * b * Random.Range(0.0f, 01.1f), this.transform.position.y, this.transform.position.z + agent.speed * b * Random.Range(0.0f, 01.1f));
         }
     }
 }
