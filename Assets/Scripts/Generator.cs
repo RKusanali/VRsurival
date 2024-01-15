@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.XR.CoreUtils;
 using UnityEngine;
+using UnityEngine.AI;
 using UnityEngine.XR.Interaction.Toolkit;
 
 public class Generator : MonoBehaviour
@@ -11,6 +12,7 @@ public class Generator : MonoBehaviour
     public GameObject spawnArea;
     public float minSpawnTime = 5f;
     public float maxSpawnTime = 10f;
+    [SerializeField] Transform position_origin;
 
     private void Start()
     {
@@ -27,6 +29,7 @@ public class Generator : MonoBehaviour
             {
 
                 Vector3 randomSpawnPoint = GetRandomPointInBounds(spawnArea.GetComponent<Collider>().bounds);
+                randomSpawnPoint.y = position_origin.position.y + 1.4f;
 
                 GameObject randomAnimal = GetRandomPrefab(animalPrefabs);
                 GameObject randomObject = GetRandomPrefab(objectPrefabs);
@@ -48,9 +51,12 @@ public class Generator : MonoBehaviour
                     }
                 }
 
+                animal.GetComponent<Animal>().agent = animal.GetComponent<NavMeshAgent>();
+
                 EnnemyAI _e = animal.GetComponent<EnnemyAI>();
                 if (_e)
                 {
+                    _e.GetComponent<Animal>().agent = _e.GetComponent<NavMeshAgent>();
                     XROrigin xr = FindAnyObjectByType<XROrigin>();
                     if (xr != null)
                     {
