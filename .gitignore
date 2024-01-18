@@ -72,3 +72,4 @@ crashlytics-build.properties
 /[Aa]ssets/[Ss]treamingAssets/aa/*
 APK/EL solidad hombre.apk
 APK/EL solidad hombre v2.0.apk
+*.apk

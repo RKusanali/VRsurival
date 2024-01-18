@@ -26,7 +26,7 @@ public class EnnemyAI : MonoBehaviour
     void Update()
     {
         float d = UnityEngine.Vector2.Distance(new UnityEngine.Vector2(this.transform.position.x, this.transform.position.z), new UnityEngine.Vector2(player.position.x, player.position.z));
-        Debug.Log(this.transform.position + " - " + d + " < " + seuil + " --> " + (d < seuil) + " ==> " + agent.speed);
+        //Debug.Log(this.transform.position + " - " + d + " < " + seuil + " --> " + (d < seuil) + " ==> " + agent.speed);
         if (animator) animator.Play("walk");
         if (player != null && d < seuil)
         {

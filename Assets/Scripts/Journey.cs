@@ -1,4 +1,6 @@
+using DigitalRuby.RainMaker;
 using System.Collections;
+using System.Diagnostics.Tracing;
 using UnityEngine;
 using Random = UnityEngine.Random;
 public class Journey : MonoBehaviour
@@ -7,13 +9,20 @@ public class Journey : MonoBehaviour
     public Material sadDay;
     public float secondsPerJourney = 60f;
     public float sadDayProbability = 0.50f;
+    [SerializeField] private GameObject rain_generator;
+
+    private CharacterMovement characterMovement;
+    [SerializeField] Camera controlcamera;
 
     public GameObject background;
+    private GameObject _new;
     private Renderer meshRenderer;
 
     [SerializeField] private AudioSource audioSource;
     [SerializeField] private AudioClip day;
     [SerializeField] private AudioClip night;
+
+    private bool ispluie;
 
     void Start()
     {
@@ -24,6 +33,10 @@ public class Journey : MonoBehaviour
 
         audioSource.clip = day;
         audioSource.Play();
+
+        characterMovement = (GameObject.FindObjectsOfType<CharacterMovement>()[0]);
+        ispluie = false;
+        _new = null;
     }
 
     IEnumerator ChangeMaterialOverTime()
@@ -39,38 +52,94 @@ public class Journey : MonoBehaviour
             journeyProgress = elapsedTime / secondsPerJourney;
             last_materialIndex = materialIndex;
             materialIndex = Mathf.FloorToInt(journeyProgress * dayMaterials.Length) % dayMaterials.Length;
+            float r = Random.value;
+            Debug.Log("Rain probability = " + materialIndex + " && " + r + "<" + sadDayProbability);
 
-            if (materialIndex == 2 && Random.value < sadDayProbability && !sadding)
+            if (!sadding)
             {
-                meshRenderer.material = sadDay;
-                sadding = true;
+                if (materialIndex == 2 && r < sadDayProbability && !sadding)
+                {
+                    meshRenderer.material = sadDay;
+                    sadding = true;
+                    ispluie = true;
+                    _new = Instantiate(rain_generator);
+                    _new.GetComponent<RainScript>().Camera = controlcamera;
+                    allumage[] allumageObjects = GameObject.FindObjectsOfType<allumage>();
+                    foreach (allumage a in allumageObjects)
+                    {
+                        a.cut();
+                    }
+
+                    if (characterMovement)
+                    {
+                        characterMovement.changeSlowSpeed();
+                    }
+                    if(controlcamera)
+                    {
+                        controlcamera.fieldOfView = 30;
+                        controlcamera.farClipPlane = 10;
+                        RenderSettings.fog = true;
+                        RenderSettings.fogMode = FogMode.Exponential;
+                        RenderSettings.fogColor = Color.grey;
+                        RenderSettings.fogDensity = 0.3f;
+                    }
+                }
+                else
+                {
+                    meshRenderer.material = dayMaterials[materialIndex];
+
+                    if (last_materialIndex != materialIndex)
+                    {
+                        if (materialIndex >= dayMaterials.Length - 1 && last_materialIndex <= dayMaterials.Length - 1)
+                        {
+                            audioSource.clip = night;
+                            audioSource.Play();
+                        }
+                        else if (materialIndex <= dayMaterials.Length - 1 && last_materialIndex >= dayMaterials.Length - 1)
+                        {
+                            audioSource.clip = day;
+                            audioSource.Play();
+                        }
+                    }
+                }
             }
             else
             {
-                meshRenderer.material = dayMaterials[materialIndex];
-
-                if(last_materialIndex != materialIndex)
+                if (materialIndex >= dayMaterials.Length - 1)
                 {
-                    if (materialIndex >= dayMaterials.Length - 1 && last_materialIndex <= dayMaterials.Length - 1)
+                    sadding = false;
+                    ispluie = false;
+                    Destroy(_new);
+                    _new = null;                  
+                    if(characterMovement)
                     {
-                        audioSource.clip = night;
-                        audioSource.Play();
+                        characterMovement.changeNormalspeed();
                     }
-                    else if(materialIndex <= dayMaterials.Length - 1 && last_materialIndex >= dayMaterials.Length - 1)
+                    if (controlcamera)
                     {
-                        audioSource.clip = day;
-                        audioSource.Play();
-                    }                   
-                }                 
+                        controlcamera.fieldOfView = 60;
+                        controlcamera.farClipPlane = 1000;
+                    }
+                    if (characterMovement)
+                    {
+                        if(characterMovement.get_HP() > 75.0f)
+                        {
+                            RenderSettings.fog = false;
+                        }
+                    }
+                }
             }
-
-            if (materialIndex >= dayMaterials.Length - 1) sadding = false;
 
             RenderSettings.skybox = meshRenderer.material;
 
             yield return new WaitForSeconds(1f);
             elapsedTime += 1f;
         }
+    }
+
+    public bool isRainning()
+    {
+        return ispluie;
     }
 }
 

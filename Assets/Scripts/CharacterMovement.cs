@@ -1,6 +1,7 @@
 using Meta.WitAi;
 using System;
 using UnityEngine;
+using UnityEngine.Assertions;
 using UnityEngine.SceneManagement;
 using UnityEngine.XR;
 using UnityEngine.XR.Interaction.Toolkit;
@@ -21,6 +22,8 @@ public class CharacterMovement : MonoBehaviour
     [SerializeField] private float jumpForce = 0.5f;
     [SerializeField] private float gravity = 9.8f;
 
+    public float maxFogDensity = 10.0f;
+
     private CharacterController characterController;
     private ActionBasedContinuousMoveProvider continuousMoveProvider;
 
@@ -35,7 +38,7 @@ public class CharacterMovement : MonoBehaviour
 
     void Update()
     {
-        Debug.Log(HP + "," + Hunger + "," + Drink + " ||| " + Time.time + " <> " + degradationTimer);
+        //Debug.Log(HP + "," + Hunger + "," + Drink + " ||| " + Time.time + " <> " + degradationTimer);
 
         bool b = (Time.time >= degradationTimer);
         Hunger = Hunger - (Hunger * 0.000001f);
@@ -77,7 +80,30 @@ public class CharacterMovement : MonoBehaviour
         {
             RestartGame();
         }
-           
+
+        this.setdgtscreen();
+
+    }
+
+    public void setdgtscreen()
+    {
+        if (get_HP() <= 75)
+        {
+            RenderSettings.fog = true;
+
+            RenderSettings.fogMode = FogMode.Exponential;
+
+            RenderSettings.fogDensity = (HP >= 50 ? 0.35f : (HP >= 25 ? 0.65f : 1.0f));
+
+            RenderSettings.fogColor = Color.black;
+
+            Debug.Log(RenderSettings.fog);
+
+        }
+        else {
+            Journey x = (GameObject.FindObjectsOfType<Journey>()[0]);
+            if(!x.isRainning()) RenderSettings.fog = false;
+        }
     }
 
     void RestartGame()
@@ -99,6 +125,7 @@ public class CharacterMovement : MonoBehaviour
             menu.set_hp_color(HP);
             UnityEngine.Vector3 v = new UnityEngine.Vector3(this.transform.position.x - UnityEngine.Random.Range(0.0f, 1.0f), this.transform.position.y, this.transform.position.z - UnityEngine.Random.Range(0.0f, 1.0f) );
             this.transform.position = v;
+            setdgtscreen();
         }
     }
 
@@ -135,5 +162,15 @@ public class CharacterMovement : MonoBehaviour
     public void set_HP(float hp)
     {
         this.HP = hp;
+    }
+
+    public void changeSlowSpeed()
+    {
+        continuousMoveProvider.moveSpeed = (waterSpeed + normalSpeed) / 2.0f;
+    }
+
+    public void changeNormalspeed()
+    {
+        continuousMoveProvider.moveSpeed = normalSpeed;
     }
 }
